@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📖 راهنمای کامل ربات اقتصادی</title>
+<style>
+  :root{
+    --bg:#0a0c11; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+    --text:#e9ecf1; --muted:#8b93a3; --accent:#5b8cff; --accent2:#22c55e;
+  }
+  *{box-sizing:border-box;}
+  html{
+    background-color:var(--bg);
+    background-image:
+      radial-gradient(circle at 12% 8%, rgba(91,140,255,.18), transparent 42%),
+      radial-gradient(circle at 88% 15%, rgba(139,92,246,.14), transparent 45%),
+      radial-gradient(circle at 50% 100%, rgba(34,197,94,.10), transparent 50%),
+      linear-gradient(160deg, #0a0c11 0%, #0d1017 45%, #0a0c11 100%);
+    background-attachment:fixed;
+    height:100%;
+    overscroll-behavior-y:none;
+  }
+  body{
+    background-color:var(--bg); color:var(--text); font-family:'Segoe UI',Tahoma,Vazirmatn,sans-serif;
+    margin:0; padding:0; direction:rtl; min-height:100%;
+    overscroll-behavior-y:none;
+  }
+  .stars-bg{
+    position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none;
+  }
+  .p-dot{
+    position:absolute; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,246,208,1) 0%, rgba(245,209,122,.9) 40%, rgba(245,209,122,0) 75%);
+    animation-name:pDrift, pTwinkle;
+    animation-timing-function:ease-in-out, ease-in-out;
+    animation-iteration-count:infinite, infinite;
+    animation-duration:var(--dur), var(--tw);
+  }
+  .p-star{
+    position:absolute; color:#f5d17a; line-height:1;
+    text-shadow:0 0 6px rgba(245,209,122,.85), 0 0 12px rgba(245,209,122,.4);
+    animation-name:pDrift, pTwinkle;
+    animation-timing-function:ease-in-out, ease-in-out;
+    animation-iteration-count:infinite, infinite;
+    animation-duration:var(--dur), var(--tw);
+  }
+  @keyframes pDrift{
+    0%,100%{ transform:translate(0,0); }
+    50%{ transform:translate(var(--dx), var(--dy)); }
+  }
+  @keyframes pTwinkle{
+    0%,100%{ opacity:var(--minop); }
+    50%{ opacity:var(--maxop); }
+  }
+  .wrap{max-width:1100px; margin:0 auto; padding:28px 20px; position:relative; z-index:1;}
+  h1{
+    font-size:24px; margin:0 0 4px; font-weight:800;
+    background:linear-gradient(90deg, #fff, #a8c4ff);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .top{display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;}
+  a{color:var(--accent); text-decoration:none;}
+
+  .guide-search{
+    position:sticky; top:0; z-index:50; padding:16px 0 14px;
+    background:transparent;
+    margin-bottom:8px;
+  }
+  .guide-search-wrap{
+    position:relative; border-radius:18px; padding:3px;
+    background:linear-gradient(120deg, #f5d17a, #fff6d0, #d4a94a, #fff6d0, #f5d17a);
+    background-size:300% 300%;
+    animation:goldShift 5s ease-in-out infinite;
+    filter:drop-shadow(0 0 18px rgba(245,209,122,.35));
+  }
+  @keyframes goldShift{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+  .guide-search input{
+    width:100%; padding:15px 48px 15px 18px; font-size:15.5px; border-radius:15px;
+    background:#12141a; border:none; color:var(--text);
+    font-family:inherit; position:relative; z-index:1;
+  }
+  .guide-search input::placeholder{color:#9a9fab;}
+  .guide-search input:focus{outline:none;}
+  .guide-search-wrap .icon{
+    position:absolute; right:18px; top:50%; transform:translateY(-50%);
+    color:#f5d17a; font-size:17px; pointer-events:none; z-index:2;
+  }
+  .cat-title{
+    font-size:14px; font-weight:700; color:var(--accent); margin:22px 0 10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .cmd-card{
+    background:linear-gradient(160deg, var(--panel), #14171e);
+    border:1px solid var(--line); border-radius:14px;
+    padding:14px 16px; margin-bottom:10px; display:flex; justify-content:space-between;
+    align-items:center; gap:14px; transition:.15s; flex-wrap:wrap;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+  }
+  .cmd-card:hover{
+    border-color:rgba(91,140,255,.4); background:linear-gradient(160deg, var(--panel2), #191d26);
+    box-shadow:0 10px 28px rgba(91,140,255,.12);
+  }
+  .cmd-main{flex:1; min-width:200px;}
+  .cmd-code{
+    font-family:monospace; font-size:14.5px; color:#a8c4ff; background:rgba(91,140,255,.08);
+    border:1px solid rgba(91,140,255,.2); border-radius:8px; padding:4px 10px; display:inline-block;
+    direction:ltr; text-align:right; margin-bottom:6px;
+  }
+  .cmd-desc{color:var(--muted); font-size:12.5px; line-height:1.6;}
+  .copy-btn{
+    background:var(--panel2); border:1px solid var(--line); color:var(--text);
+    border-radius:10px; padding:9px 16px; font-size:13px; cursor:pointer; white-space:nowrap;
+    display:flex; align-items:center; gap:6px; font-weight:600; font-family:inherit;
+  }
+  .copy-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .copy-btn.copied{background:rgba(34,197,94,.15); border-color:rgba(34,197,94,.4); color:#7ee2a8;}
+  .admin-only{border-color:rgba(245,158,11,.3);}
+  .admin-only .cmd-code{color:#ffcf80; background:rgba(245,158,11,.08); border-color:rgba(245,158,11,.25);}
+  .no-results{text-align:center; color:var(--muted); padding:40px 0; display:none;}
+  .admin-badge{
+    display:inline-block; background:rgba(245,158,11,.15); color:#ffcf80; font-size:10.5px;
+    padding:2px 8px; border-radius:99px; margin-right:6px; border:1px solid rgba(245,158,11,.3);
+  }
+</style>
+</head>
+<body>
+
+<div class="stars-bg">
+  <div class="p-star" style="top:67.1%;left:28.2%;font-size:11.9px;--dx:-8.3px;--dy:-19.9px;--dur:12.2s;--tw:3.1s;--minop:0.3;--maxop:0.89;animation-delay:-14.7s,-0.2s;">✦</div>
+  <div class="p-dot" style="top:52.8%;left:14.7%;width:5.2px;height:5.2px;--dx:-28.4px;--dy:-24.2px;--dur:21.7s;--tw:4.7s;--minop:0.22;--maxop:0.75;animation-delay:-6.1s,-3.7s;"></div>
+  <div class="p-dot" style="top:39.9%;left:10.4%;width:5.5px;height:5.5px;--dx:-26.3px;--dy:-38.0px;--dur:11.7s;--tw:2.9s;--minop:0.15;--maxop:0.75;animation-delay:-13.2s,-4.7s;"></div>
+  <div class="p-dot" style="top:6.3%;left:6.0%;width:3.8px;height:3.8px;--dx:10.8px;--dy:-27.2px;--dur:13.1s;--tw:4.0s;--minop:0.31;--maxop:0.91;animation-delay:-10.9s,-3.5s;"></div>
+  <div class="p-dot" style="top:10.1%;left:36.4%;width:3.1px;height:3.1px;--dx:22.5px;--dy:-21.6px;--dur:10.9s;--tw:3.1s;--minop:0.17;--maxop:0.95;animation-delay:-13.1s,-3.2s;"></div>
+  <div class="p-dot" style="top:77.2%;left:53.3%;width:6.1px;height:6.1px;--dx:-10.2px;--dy:-33.3px;--dur:19.5s;--tw:5.0s;--minop:0.31;--maxop:0.92;animation-delay:-2.9s,-1.0s;"></div>
+  <div class="p-dot" style="top:99.3%;left:46.6%;width:4.9px;height:4.9px;--dx:-24.8px;--dy:-36.9px;--dur:13.5s;--tw:3.2s;--minop:0.15;--maxop:0.99;animation-delay:-3.4s,-4.2s;"></div>
+  <div class="p-star" style="top:23.8%;left:10.9%;font-size:11.3px;--dx:-18.0px;--dy:-25.6px;--dur:14.4s;--tw:2.8s;--minop:0.23;--maxop:0.79;animation-delay:-4.8s,-3.6s;">✦</div>
+  <div class="p-dot" style="top:98.8%;left:95.5%;width:4.5px;height:4.5px;--dx:-16.8px;--dy:-33.2px;--dur:11.6s;--tw:3.0s;--minop:0.32;--maxop:0.84;animation-delay:-7.5s,-0.5s;"></div>
+  <div class="p-dot" style="top:8.1%;left:44.9%;width:5.2px;height:5.2px;--dx:23.0px;--dy:-15.4px;--dur:20.2s;--tw:3.2s;--minop:0.33;--maxop:0.99;animation-delay:-11.7s,-3.2s;"></div>
+  <div class="p-dot" style="top:80.1%;left:97.2%;width:4.6px;height:4.6px;--dx:-5.9px;--dy:-11.6px;--dur:18.4s;--tw:2.9s;--minop:0.33;--maxop:0.94;animation-delay:-17.5s,-4.2s;"></div>
+  <div class="p-dot" style="top:84.0%;left:94.5%;width:4.9px;height:4.9px;--dx:9.8px;--dy:-38.2px;--dur:18.1s;--tw:4.1s;--minop:0.21;--maxop:0.82;animation-delay:-0.1s,-0.9s;"></div>
+  <div class="p-star" style="top:10.5%;left:26.6%;font-size:10.3px;--dx:11.2px;--dy:-24.1px;--dur:11.8s;--tw:3.1s;--minop:0.19;--maxop:0.79;animation-delay:-1.8s,-0.9s;">✦</div>
+  <div class="p-dot" style="top:48.9%;left:3.9%;width:5.7px;height:5.7px;--dx:15.9px;--dy:-22.8px;--dur:20.4s;--tw:3.3s;--minop:0.27;--maxop:0.84;animation-delay:-6.1s,-2.0s;"></div>
+  <div class="p-dot" style="top:95.3%;left:69.0%;width:5.1px;height:5.1px;--dx:7.1px;--dy:-19.7px;--dur:9.7s;--tw:4.7s;--minop:0.31;--maxop:0.82;animation-delay:-4.4s,-0.6s;"></div>
+  <div class="p-star" style="top:94.2%;left:26.0%;font-size:14.5px;--dx:17.7px;--dy:-11.5px;--dur:11.9s;--tw:2.3s;--minop:0.19;--maxop:0.77;animation-delay:-11.2s,-4.6s;">✦</div>
+  <div class="p-dot" style="top:9.1%;left:42.5%;width:6.3px;height:6.3px;--dx:-22.6px;--dy:-33.3px;--dur:17.2s;--tw:4.9s;--minop:0.35;--maxop:0.71;animation-delay:-8.5s,-3.0s;"></div>
+  <div class="p-dot" style="top:93.4%;left:43.4%;width:6.5px;height:6.5px;--dx:19.6px;--dy:-33.7px;--dur:12.3s;--tw:3.2s;--minop:0.2;--maxop:0.83;animation-delay:-15.2s,-2.1s;"></div>
+  <div class="p-star" style="top:8.4%;left:85.6%;font-size:10.5px;--dx:14.5px;--dy:-20.0px;--dur:14.7s;--tw:3.4s;--minop:0.17;--maxop:0.88;animation-delay:-1.5s,-3.7s;">✦</div>
+  <div class="p-dot" style="top:66.9%;left:2.3%;width:4.8px;height:4.8px;--dx:-19.9px;--dy:-36.5px;--dur:9.8s;--tw:4.4s;--minop:0.23;--maxop:0.96;animation-delay:-17.4s,-3.8s;"></div>
+  <div class="p-star" style="top:1.9%;left:55.4%;font-size:13.5px;--dx:-19.3px;--dy:-22.7px;--dur:18.7s;--tw:3.3s;--minop:0.27;--maxop:0.99;animation-delay:-18.7s,-0.1s;">✦</div>
+  <div class="p-dot" style="top:32.4%;left:15.1%;width:5.6px;height:5.6px;--dx:-25.7px;--dy:-23.9px;--dur:13.8s;--tw:2.6s;--minop:0.24;--maxop:0.72;animation-delay:-9.9s,-4.8s;"></div>
+  <div class="p-star" style="top:34.7%;left:1.8%;font-size:12.0px;--dx:-19.4px;--dy:-13.9px;--dur:17.7s;--tw:2.5s;--minop:0.17;--maxop:0.95;animation-delay:-10.5s,-0.3s;">✦</div>
+  <div class="p-star" style="top:39.8%;left:48.7%;font-size:17.9px;--dx:13.3px;--dy:-26.4px;--dur:16.0s;--tw:3.3s;--minop:0.2;--maxop:0.93;animation-delay:-13.2s,-4.0s;">✦</div>
+  <div class="p-star" style="top:26.4%;left:9.0%;font-size:13.2px;--dx:-18.3px;--dy:-29.5px;--dur:14.3s;--tw:2.6s;--minop:0.26;--maxop:0.91;animation-delay:-8.3s,-2.4s;">✦</div>
+  <div class="p-star" style="top:40.5%;left:34.8%;font-size:10.4px;--dx:-14.8px;--dy:-28.4px;--dur:20.4s;--tw:2.6s;--minop:0.28;--maxop:0.97;animation-delay:-16.7s,-4.6s;">✦</div>
+  <div class="p-dot" style="top:24.4%;left:57.4%;width:5.1px;height:5.1px;--dx:22.5px;--dy:-18.1px;--dur:12.7s;--tw:5.0s;--minop:0.3;--maxop:0.75;animation-delay:-17.6s,-2.9s;"></div>
+  <div class="p-dot" style="top:22.7%;left:51.8%;width:4.4px;height:4.4px;--dx:-28.3px;--dy:-39.2px;--dur:12.6s;--tw:3.1s;--minop:0.24;--maxop:0.98;animation-delay:-6.1s,-0.2s;"></div>
+  <div class="p-dot" style="top:44.3%;left:61.3%;width:5.0px;height:5.0px;--dx:0.7px;--dy:-19.2px;--dur:14.9s;--tw:3.8s;--minop:0.29;--maxop:0.96;animation-delay:-10.4s,-0.3s;"></div>
+  <div class="p-dot" style="top:13.1%;left:91.0%;width:4.4px;height:4.4px;--dx:-2.5px;--dy:-22.5px;--dur:20.8s;--tw:3.6s;--minop:0.26;--maxop:0.86;animation-delay:-1.6s,-2.5s;"></div>
+  <div class="p-dot" style="top:1.9%;left:44.0%;width:3.7px;height:3.7px;--dx:-29.8px;--dy:-16.0px;--dur:11.2s;--tw:3.7s;--minop:0.22;--maxop:0.86;animation-delay:-5.5s,-2.2s;"></div>
+  <div class="p-star" style="top:66.9%;left:78.4%;font-size:17.2px;--dx:-13.8px;--dy:-14.2px;--dur:19.2s;--tw:2.4s;--minop:0.18;--maxop:0.99;animation-delay:-2.3s,-0.2s;">✦</div>
+  <div class="p-dot" style="top:85.8%;left:29.0%;width:3.6px;height:3.6px;--dx:-22.9px;--dy:-30.7px;--dur:19.6s;--tw:3.0s;--minop:0.22;--maxop:0.86;animation-delay:-8.4s,-1.8s;"></div>
+  <div class="p-star" style="top:43.2%;left:49.5%;font-size:16.7px;--dx:-4.3px;--dy:-18.9px;--dur:19.6s;--tw:4.5s;--minop:0.26;--maxop:0.91;animation-delay:-13.1s,-0.8s;">✦</div>
+  <div class="p-dot" style="top:65.3%;left:80.0%;width:3.3px;height:3.3px;--dx:9.6px;--dy:-12.7px;--dur:19.2s;--tw:4.4s;--minop:0.31;--maxop:0.8;animation-delay:-10.4s,-4.1s;"></div>
+  <div class="p-dot" style="top:15.1%;left:17.6%;width:3.9px;height:3.9px;--dx:-16.0px;--dy:-25.5px;--dur:16.7s;--tw:3.2s;--minop:0.22;--maxop:0.87;animation-delay:-19.9s,-2.9s;"></div>
+  <div class="p-star" style="top:91.9%;left:57.1%;font-size:15.6px;--dx:-16.4px;--dy:-28.7px;--dur:19.6s;--tw:3.1s;--minop:0.25;--maxop:0.95;animation-delay:-18.6s,-0.3s;">✦</div>
+  <div class="p-dot" style="top:14.6%;left:82.7%;width:6.9px;height:6.9px;--dx:9.4px;--dy:-29.5px;--dur:16.1s;--tw:2.8s;--minop:0.28;--maxop:0.86;animation-delay:-19.7s,-0.1s;"></div>
+  <div class="p-dot" style="top:55.5%;left:78.4%;width:3.4px;height:3.4px;--dx:3.6px;--dy:-32.5px;--dur:12.6s;--tw:4.4s;--minop:0.3;--maxop:0.97;animation-delay:-9.8s,-2.2s;"></div>
+  <div class="p-star" style="top:24.4%;left:96.6%;font-size:12.5px;--dx:-5.7px;--dy:-30.0px;--dur:15.3s;--tw:3.2s;--minop:0.23;--maxop:0.75;animation-delay:-9.9s,-4.0s;">✦</div>
+</div>
+
+<div class="wrap">
+  <div class="top">
+    <h1>📖 راهنمای کامل ربات</h1>
+  </div>
+
+  <div class="guide-search">
+    <div class="guide-search-wrap">
+      <input type="text" id="searchBox" placeholder="جستجوی دستور... (مثلاً: بانک، اسلات، بن)" oninput="filterCommands()" autocomplete="off">
+      <span class="icon">🔎</span>
+    </div>
+  </div>
+
+  <div id="commandsWrap"></div>
+  <div class="no-results" id="noResults">😕 دستوری با این عبارت پیدا نشد.</div>
+</div>
+
+<script>
+// ===================== محتوای راهنما (این بخش همیشه اول اجرا می‌شه) =====================
+const CATEGORIES = [
+  { title: "🔰 مدیریت هویت و پروفایل", items: [
+    { cmd: "موجودی", desc: "نمایش کیف پول، شناسه، سطح، XP و اخطارها" },
+    { cmd: "موجودی [شناسه]", desc: "دیدن موجودی یه کاربر دیگه (یا با ریپلای روی پیامش بنویس موجودی)" },
+    { cmd: "ثبت لقب [نام]", desc: "تغییر نام نمایشی‌ات (سراسری)" },
+  ]},
+  { title: "🏦 بانک و وام", items: [
+    { cmd: "بانک", desc: "وضعیت بانک، موجودی و سود ساعتی" },
+    { cmd: "واریز [مبلغ]", desc: "انتقال از کیف پول به بانک" },
+    { cmd: "برداشت [مبلغ]", desc: "انتقال از بانک به کیف پول" },
+    { cmd: "وام", desc: "دریافت وام فوری (با کارمزد ۱۰٪)" },
+    { cmd: "بازپرداخت وام", desc: "تسویه‌ی وامت" },
+  ]},
+  { title: "🪙 انتقال پول", items: [
+    { cmd: "انتقال [مبلغ]", desc: "با ریپلای روی پیام کاربر — یا: انتقال [شناسه] [مبلغ]" },
+    { cmd: "اهدا [مبلغ]", desc: "با ریپلای روی پیام کاربر — یا: اهدا [شناسه] [مبلغ]" },
+  ]},
+  { title: "🎰 بازی‌های شانسی", items: [
+    { cmd: "کازینو [مبلغ]", desc: "دو برابر کن یا از دست بده (۵۰٪ / ۵۰٪)" },
+    { cmd: "اسلات [مبلغ]", desc: "بچرخون و ببین چی میاد (شانس برد ۴۵٪، ضریب‌های ۱× تا ۵×)" },
+    { cmd: "زوج [مبلغ]", desc: "شرط روی زوج بودن عدد شانس (۵۰٪ / ۵۰٪)" },
+    { cmd: "فرد [مبلغ]", desc: "شرط روی فرد بودن عدد شانس (۵۰٪ / ۵۰٪)" },
+    { cmd: "تاس [عدد ۱ تا ۶] [مبلغ]", desc: "عدد رو درست حدس بزن، ۵ برابر ببر" },
+    { cmd: "ایموجی [ایموجی] [مبلغ]", desc: "با ربات دوئل کن، اگه ایموجیت با ربات یکی شد ۴ برابر می‌بری" },
+    { cmd: "گردونه", desc: "یک‌بار در روز، کاملاً رایگان" },
+  ]},
+  { title: "🎁 جوایز روزانه", items: [
+    { cmd: "جایزه روزانه", desc: "جایزه‌ی امروزت رو بگیر (پیوسته بمونی، بیشتر می‌گیری)" },
+    { cmd: "جدول جوایز", desc: "جدول کامل جایزه‌ی هر روز رو ببین" },
+  ]},
+  { title: "🏆 لیدربورد", items: [
+    { cmd: "برترین های روز", desc: "بر اساس دارایی فعلی، فقط کسایی که امروز فعال بودن" },
+    { cmd: "برترین های هفته", desc: "بر اساس دارایی فعلی، فقط کسایی که این‌هفته فعال بودن" },
+    { cmd: "برترین های ماه", desc: "بر اساس دارایی فعلی، فقط کسایی که این‌ماه فعال بودن" },
+    { cmd: "برترین های کل", desc: "ثروتمندترین‌های کل ربات (بدون فیلتر فعالیت) — یا: افراد لیدربوردی" },
+    { cmd: "برترین های سطح", desc: "لیدربورد بر اساس XP — یا: لیدربورد سطح" },
+  ]},
+  { title: "⚔️ 𝕃𝔼𝔾𝔼ℕ𝔻 (ویژه‌ی برترین‌های لیدربورد)", items: [
+    { cmd: "چالش [شناسه حریف] [نوع بازی] [مبلغ]", desc: "انواع بازی: دوز / شطرنج / بسکتبال / فوتبال / Fight the king" },
+    { cmd: "حرکت [۱ تا ۹]", desc: "برای بازی دوز" },
+  ]},
+  { title: "ℹ️ عمومی", items: [
+    { cmd: "ادمین ها", desc: "نمایش لیست گردانندگان ربات" },
+    { cmd: "فعال", desc: "شروع کار با ربات" },
+  ]},
+  { title: "⚠️ دستورات مدیریتی (فقط ادمین‌ها)", admin: true, items: [
+    { cmd: "ساخت هدیه [مبلغ]", desc: "ساخت کد هدیه‌ی جدید" },
+    { cmd: "حذف هدیه [کد]", desc: "غیرفعال‌کردن یه کد هدیه" },
+    { cmd: "واریز کاربر [مبلغ]", desc: "با ریپلای — یا: واریز کاربر [شناسه] [مبلغ]" },
+    { cmd: "کسر کاربر [مبلغ]", desc: "با ریپلای — یا: کسر کاربر [شناسه] [مبلغ]" },
+    { cmd: "تنظیم موجودی [مبلغ]", desc: "با ریپلای — یا: تنظیم موجودی [شناسه] [مبلغ]" },
+    { cmd: "بن", desc: "با ریپلای روی پیام کاربر، دلیل اختیاری بعدش" },
+    { cmd: "آنبن", desc: "با ریپلای روی پیام کاربر" },
+    { cmd: "اخطار", desc: "با ریپلای روی پیام کاربر" },
+    { cmd: "ادمین کردن", desc: "با ریپلای — کاربر رو ادمین می‌کنه (فقط مالکان)" },
+    { cmd: "برکنار کردن", desc: "با ریپلای — ادمین رو برکنار می‌کنه (فقط مالکان)" },
+    { cmd: "لیست ادمین ها", desc: "نمایش همه‌ی ادمین‌ها" },
+    { cmd: "آمار", desc: "گزارش کامل آماری ربات" },
+  ]},
+];
+
+function renderCommands() {
+  const wrap = document.getElementById('commandsWrap');
+  let html = '';
+  CATEGORIES.forEach(cat => {
+    html += `<div class="cat-title" data-cat>${cat.title}</div>`;
+    cat.items.forEach(item => {
+      html += `
+        <div class="cmd-card ${cat.admin ? 'admin-only' : ''}" data-cmd="${item.cmd.toLowerCase()}" data-desc="${item.desc.toLowerCase()}">
+          <div class="cmd-main">
+            ${cat.admin ? '<span class="admin-badge">ادمین</span>' : ''}
+            <div class="cmd-code">${item.cmd}</div>
+            <div class="cmd-desc">${item.desc}</div>
+          </div>
+          <button class="copy-btn" onclick="copyCmd(this, '${item.cmd.replace(/'/g, "\\\\'")}')">📋 کپی</button>
+        </div>`;
+    });
+  });
+  wrap.innerHTML = html;
+}
+
+function showCopied(btn) {
+  const original = btn.innerHTML;
+  btn.innerHTML = '✅ کپی شد';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.innerHTML = original; btn.classList.remove('copied'); }, 1300);
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.top = '-9999px';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  document.body.removeChild(ta);
+  return ok;
+}
+
+function copyCmd(btn, text) {
+  // navigator.clipboard فقط روی HTTPS (یا localhost) کار می‌کنه؛ اگه در
+  // دسترس نبود یا رد شد، از روش قدیمی‌تر (textarea + execCommand) استفاده می‌کنیم
+  if (window.isSecureContext && navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(
+      () => showCopied(btn),
+      () => { if (fallbackCopy(text)) showCopied(btn); else alert('کپی نشد، خودت متن رو انتخاب و کپی کن: ' + text); }
+    );
+  } else {
+    if (fallbackCopy(text)) showCopied(btn);
+    else alert('کپی نشد، خودت متن رو انتخاب و کپی کن: ' + text);
+  }
+}
+
+renderCommands();
+
+function filterCommands() {
+  const q = document.getElementById('searchBox').value.trim().toLowerCase();
+  const cards = document.querySelectorAll('.cmd-card');
+  const titles = document.querySelectorAll('[data-cat]');
+  let anyVisible = false;
+
+  cards.forEach(card => {
+    const match = !q || card.dataset.cmd.includes(q) || card.dataset.desc.includes(q);
+    card.style.display = match ? 'flex' : 'none';
+    if (match) anyVisible = true;
+  });
+
+  titles.forEach(title => {
+    let next = title.nextElementSibling;
+    let hasVisible = false;
+    while (next && !next.hasAttribute('data-cat')) {
+      if (next.style.display !== 'none') hasVisible = true;
+      next = next.nextElementSibling;
+    }
+    title.style.display = hasVisible ? 'flex' : 'none';
+  });
+
+  document.getElementById('noResults').style.display = anyVisible ? 'none' : 'block';
+}
+
+</script>
+</body>
+</html>
